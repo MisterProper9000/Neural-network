@@ -1,7 +1,7 @@
 # Neural-network
 Some neural network stuff from 2016
 
-h1 WHAT'S NEXT
+WHAT'S NEXT
 =====================
   * Создать класс для NeuNet
   * Добавить возможность задавать архитектуру (число слоёв и нейронов в них)
