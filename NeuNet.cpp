@@ -18,27 +18,27 @@ using namespace std;
 #define HIDDEN_NEURONS		3
 #define OUTPUT_NEURONS		4
 
-#define LEARN_RATE			0.15		//коэффициент обучения
+#define LEARN_RATE			0.15		//РєРѕСЌС„С„РёС†РёРµРЅС‚ РѕР±СѓС‡РµРЅРёСЏ
 #define RAND_WEIGHT			( ((float)rand() / (float)RAND_MAX) - 0.5 )
 #define getSRand()			( (float)rand() / (float)RAND_MAX )
 
 #define getRand(x)			(int)((x) * getSRand())
 #define sqr(x)				((x) * (x))
 
-/*    ВЕСА    */
-//вход скрытых ячеек (со смещением)
+/*    Р’Р•РЎРђ    */
+//РІС…РѕРґ СЃРєСЂС‹С‚С‹С… СЏС‡РµРµРє (СЃРѕ СЃРјРµС‰РµРЅРёРµРј)
 double wih[INPUT_NEURONS + 1][HIDDEN_NEURONS];
 
-//вход выходных ячеек (со смещением)
+//РІС…РѕРґ РІС‹С…РѕРґРЅС‹С… СЏС‡РµРµРє (СЃРѕ СЃРјРµС‰РµРЅРёРµРј)
 double who[HIDDEN_NEURONS + 1][OUTPUT_NEURONS];
 
-//активаторы
+//Р°РєС‚РёРІР°С‚РѕСЂС‹
 double inputs[INPUT_NEURONS];
 double hidden[HIDDEN_NEURONS];
 double target[OUTPUT_NEURONS];
 double actual[OUTPUT_NEURONS];
 
-//ошибки
+//РѕС€РёР±РєРё
 double erro[OUTPUT_NEURONS];
 double errh[HIDDEN_NEURONS];
 
@@ -57,7 +57,7 @@ typedef struct {
 } ELEMENT;
 
 #define MAX_SAMPLES 18
-//Теперь кароче, первый элемент -- интеллект, второй -- число заваленных кр, третий -- отупляющий дебафф, четвёртый -- дни на подготовку
+//РїРµСЂРІС‹Р№ СЌР»РµРјРµРЅС‚ -- РёРЅС‚РµР»Р»РµРєС‚, РІС‚РѕСЂРѕР№ -- С‡РёСЃР»Рѕ Р·Р°РІР°Р»РµРЅРЅС‹С… РєСЂ (РѕС‚РЅРѕС€РµРЅРёСЏ СЃ РїСЂРµРїРѕРґРѕРј), С‚СЂРµС‚РёР№ -- РѕС‚СѓРїР»СЏСЋС‰РёР№ РґРµР±Р°С„С„, С‡РµС‚РІС‘СЂС‚С‹Р№ -- РґРЅРё РЅР° РїРѕРґРіРѕС‚РѕРІРєСѓ
 /*	   I	F    S    D     N    R	  Z    P */
 ELEMENT samples[MAX_SAMPLES] = {
 	{ 2.0, 0.0, 0.0, 1.0,{ 0.0, 1.0, 0.0, 0.0 } },
@@ -126,7 +126,7 @@ void feedForward() {
 	int inp, hid, out;
 	double sum;
 
-	//вычисляем входы в скрытые слои
+	//РІС‹С‡РёСЃР»СЏРµРј РІС…РѕРґС‹ РІ СЃРєСЂС‹С‚С‹Рµ СЃР»РѕРё
 	for (hid = 0; hid < HIDDEN_NEURONS; hid++) {
 
 		sum = 0.0;
@@ -135,13 +135,13 @@ void feedForward() {
 		}
 
 
-		//добавить смещение
+		//РґРѕР±Р°РІРёС‚СЊ СЃРјРµС‰РµРЅРёРµ
 		sum += wih[INPUT_NEURONS][hid];
 
 		hidden[hid] = sigmoid(sum);
 	}
 
-	//вход во входной слой
+	//РІС…РѕРґ РІРѕ РІС…РѕРґРЅРѕР№ СЃР»РѕР№
 	for (out = 0; out < OUTPUT_NEURONS; out++) {
 
 		sum = 0.0;
@@ -149,7 +149,7 @@ void feedForward() {
 			sum += hidden[hid] * who[hid][out];
 		}
 
-		//добавить смещение
+		//Г¤Г®ГЎГ ГўГЁГІГј Г±Г¬ГҐГ№ГҐГ­ГЁГҐ
 		sum += who[HIDDEN_NEURONS][out];
 
 		actual[out] = sigmoid(sum);
@@ -160,12 +160,12 @@ void feedForward() {
 void backPropagate(void) {
 	int inp, hid, out;
 
-	//вычисление ошибки выходного слоя
+	//РІС‹С‡РёСЃР»РµРЅРёРµ РѕС€РёР±РєРё РІС‹С…РѕРґРЅРѕРіРѕ СЃР»РѕСЏ
 	for (out = 0; out < OUTPUT_NEURONS; out++) {
 		erro[out] = (target[out] - actual[out]) * sigmoidDerivative(actual[out]);
 	}
 
-	//вычисление ошибки скрытого слоя
+	//РІС‹С‡РёСЃР»РµРЅРёРµ РѕС€РёР±РєРё СЃРєСЂС‹С‚РѕРіРѕ СЃР»РѕСЏ
 	for (hid = 0; hid < HIDDEN_NEURONS; hid++) {
 		errh[hid] = 0.0;
 		for (out = 0; out < OUTPUT_NEURONS; out++) {
@@ -175,23 +175,23 @@ void backPropagate(void) {
 		errh[hid] *= sigmoidDerivative(hidden[hid]);
 	}
 
-	//обновление весов выходного слоя
+	//РѕР±РЅРѕРІР»РµРЅРёРµ РІРµСЃРѕРІ РІС‹С…РѕРґРЅРѕРіРѕ СЃР»РѕСЏ
 	for (out = 0; out < OUTPUT_NEURONS; out++) {
 		for (hid = 0; hid < HIDDEN_NEURONS; hid++) {
 			who[hid][out] += (LEARN_RATE * erro[out] * hidden[hid]);
 		}
 
-		//обновление смещения
+		//РѕР±РЅРѕРІР»РµРЅРёРµ СЃРјРµС‰РµРЅРёСЏ
 		who[HIDDEN_NEURONS][out] += (LEARN_RATE * erro[out]);
 	}
 
-	//обновление весов скрытого слоя
+	//РѕР±РЅРѕРІР»РµРЅРёРµ РІРµСЃРѕРІ СЃРєСЂС‹С‚РѕРіРѕ СЃР»РѕСЏ
 	for (hid = 0; hid < HIDDEN_NEURONS; hid++) {
 		for (inp = 0; inp < INPUT_NEURONS; inp++) {
 			wih[inp][hid] += (LEARN_RATE * errh[hid] * inputs[inp]);
 		}
 
-		//обновление смещения
+		//РѕР±РЅРѕРІР»РµРЅРёРµ СЃРјРµС‰РµРЅРёСЏ
 		wih[INPUT_NEURONS][hid] += (LEARN_RATE * errh[hid]);
 	}
 }
@@ -205,10 +205,10 @@ int main()
 		int i, sample = 0, iterations = 0;
 		int sum = 0;
 		FILE * out = fopen("stats.txt", "w");
-		/* Инициализировать генератор случайных чисел */
+		/* РРЅРёС†РёР°Р»РёР·РёСЂРѕРІР°С‚СЊ РіРµРЅРµСЂР°С‚РѕСЂ СЃР»СѓС‡Р°Р№РЅС‹С… С‡РёСЃРµР» */
 		srand(time(NULL));
 		assignRandWeights();
-		/* Обучить сеть */
+		/* РћР±СѓС‡РёС‚СЊ СЃРµС‚СЊ */
 		while (1) {
 			if (++sample == MAX_SAMPLES) sample = 0;
 
@@ -236,7 +236,7 @@ int main()
 			if (iterations++ > 100000) break;
 			backPropagate();
 		}
-		/* Проверить сеть */
+		/* РџСЂРѕРІРµСЂРёС‚СЊ СЃРµС‚СЊ */
 		for (i = 0; i < MAX_SAMPLES; i++) {
 			inputs[0] = samples[i].health;
 			inputs[1] = samples[i].knife;
@@ -258,8 +258,8 @@ int main()
 		}
 		fprintf(out, "Network is %g%% correct\n",
 			((float)sum / (float)MAX_SAMPLES) * 100.0);
-		/* Выполнение тестов */
-		/* Интеллект Кр Дебафф Дни */
+		/* Р’С‹РїРѕР»РЅРµРЅРёРµ С‚РµСЃС‚РѕРІ */
+		/* РРЅС‚РµР»Р»РµРєС‚ РљСЂ Р”РµР±Р°С„С„ Р”РЅРё */
 
 		inputs[0] = 2.0; inputs[1] = 2.0; inputs[2] = 2.0; inputs[3] = 1.0;
 		feedForward();
